@@ -1,5 +1,6 @@
-# SFND_Unscented_Kalman_Filter
-Sensor Fusion UKF Highway Project Starter Code
+# Unscented Kalman Filtering
+
+Sensor Fusion UKF Highway Project
 
 <img src="media/ukf_highway_tracked.gif" width="700" height="400" />
 
