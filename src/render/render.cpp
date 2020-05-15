@@ -2,6 +2,7 @@
 // Functions and structs used to render the enviroment
 // such as cars and the highway
 
+#include <algorithm>
 #include "render.h"
 
 void renderHighway(double distancePos, pcl::visualization::PCLVisualizer::Ptr &viewer) {
@@ -32,8 +33,10 @@ void renderHighway(double distancePos, pcl::visualization::PCLVisualizer::Ptr &v
 
     //double distancePos = 7;
     double markerPos = (roadLengthBehind / poleSpace) * poleSpace - distancePos;
-    while (markerPos < roadLengthBehind)
+    while (markerPos < roadLengthBehind) {
         markerPos += poleSpace;
+    }
+
     int poleIndex = 0;
     while (markerPos <= roadLengthAhead) {
         //	left pole
@@ -65,9 +68,8 @@ void renderHighway(double distancePos, pcl::visualization::PCLVisualizer::Ptr &v
                                             "pole_" + std::to_string(poleIndex) + "rframe");
 
         markerPos += poleSpace;
-        poleIndex++;
+        ++poleIndex;
     }
-
 }
 
 int countRays = 0;
@@ -75,7 +77,7 @@ int countRays = 0;
 void renderRays(pcl::visualization::PCLVisualizer::Ptr &viewer, const Vect3 &origin,
                 const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud) {
 
-    for (pcl::PointXYZ point : cloud->points) {
+    for (const auto& point : cloud->points) {
         viewer->addLine(pcl::PointXYZ(origin.x, origin.y, origin.z), point, 1, 0, 0, "ray" + std::to_string(countRays));
         countRays++;
     }
@@ -83,7 +85,7 @@ void renderRays(pcl::visualization::PCLVisualizer::Ptr &viewer, const Vect3 &ori
 
 void clearRays(pcl::visualization::PCLVisualizer::Ptr &viewer) {
     while (countRays) {
-        countRays--;
+        --countRays;
         viewer->removeShape("ray" + std::to_string(countRays));
     }
 }
@@ -116,10 +118,7 @@ void renderPointCloud(pcl::visualization::PCLVisualizer::Ptr &viewer, const pcl:
 
 // Draw wire frame box with filled transparent color
 void renderBox(pcl::visualization::PCLVisualizer::Ptr &viewer, Box box, int id, Color color, float opacity) {
-    if (opacity > 1.0)
-        opacity = 1.0;
-    if (opacity < 0.0)
-        opacity = 0.0;
+    opacity = std::min(std::max(opacity, 0.0F), 1.0F);
 
     std::string cube = "box" + std::to_string(id);
     //viewer->addCube(box.bboxTransform, box.bboxQuaternion, box.cube_length, box.cube_width, box.cube_height, cube);

@@ -20,7 +20,16 @@ link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
 
-add_executable (ukf_highway src/main.cpp src/ukf.cpp src/tools.cpp src/render/render.cpp)
+# Source files and private header files go here.
+set(SOURCE_FILES
+        src/main.cpp
+        src/ukf.cpp
+        src/tools.cpp
+        src/highway.cpp
+        src/render/render.cpp
+        src/render/car.cpp)
+
+add_executable (ukf_highway ${SOURCE_FILES})
 target_link_libraries (ukf_highway ${PCL_LIBRARIES})
 
 # add_definitions(-std=c++11)
