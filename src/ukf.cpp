@@ -335,17 +335,19 @@ void UKF::ProcessMeasurement(const MeasurementPackage& meas_package) {
     Prediction(dt);
 
     if (use_laser_ && (meas_package.sensor_type_ == MeasurementPackage::LASER)) {
-        UpdateLidar(meas_package);
+        const auto nis = UpdateLidar(meas_package);
+        nisScoresLidar.emplace_back(std::make_pair(meas_package.timestamp_, nis));
+
     } else if (use_radar_ && (meas_package.sensor_type_ == MeasurementPackage::RADAR)) {
-        UpdateRadar(meas_package);
+        const auto nis = UpdateRadar(meas_package);
+        nisScoresRadar.emplace_back(std::make_pair(meas_package.timestamp_, nis));
     }
 }
 
-void UKF::UpdateLidar(const MeasurementPackage& meas_package) {
+double UKF::UpdateLidar(const MeasurementPackage& meas_package) {
     /**
      * Use LiDAR data to update the belief about the object's position.
      * Modify the state vector, x_, and covariance, P_.
-     * TODO: You can also calculate the LiDAR NIS, if desired.
      */
 
     // Predict the LiDAR measurement.
@@ -364,13 +366,16 @@ void UKF::UpdateLidar(const MeasurementPackage& meas_package) {
     // Apply Kalman filter magic sauce.
     x_ = x_ + (K * y);
     P_ = (I_ - K * H_lidar_) * P_;
+
+    // Determine Normalized Innovation Squared (NIS) score.
+    const auto nis = y.transpose() * S.inverse() * y;
+    return nis;
 }
 
-void UKF::UpdateRadar(const MeasurementPackage& meas_package) {
+double UKF::UpdateRadar(const MeasurementPackage& meas_package) {
     /**
      * Use Radar data to update the belief about the object's position.
      * Modify the state vector, x_, and covariance, P_.
-     * TODO: You can also calculate the Radar NIS, if desired.
      */
 
     // Radar updates are a bit more involved than the LiDAR updates,
@@ -386,7 +391,7 @@ void UKF::UpdateRadar(const MeasurementPackage& meas_package) {
     MatrixXd Zsig = MatrixXd(n_z_radar_, n_sigma_points_);
 
     PredictRadarMeasurement(z_pred, S, Zsig);
-    UpdateStateFromRadar(meas_package, z_pred, S, Zsig);
+    return UpdateStateFromRadar(meas_package, z_pred, S, Zsig);
 }
 
 void UKF::PredictRadarMeasurement(VectorXd &z_pred, MatrixXd &S, MatrixXd &Zsig) {
@@ -433,7 +438,7 @@ void UKF::PredictRadarMeasurement(VectorXd &z_pred, MatrixXd &S, MatrixXd &Zsig)
     S += R_radar_;
 }
 
-void UKF::UpdateStateFromRadar(const MeasurementPackage& meas_package, const VectorXd &z_pred, const MatrixXd &S,
+double UKF::UpdateStateFromRadar(const MeasurementPackage& meas_package, const VectorXd &z_pred, const MatrixXd &S,
                                const MatrixXd &Zsig) {
     // Cross-correlation between sigma points in state space and measurement space,
     // usd to determine the Kalman gain.
@@ -465,5 +470,9 @@ void UKF::UpdateStateFromRadar(const MeasurementPackage& meas_package, const Vec
     // Apply the Kalman filter magic sauce.
     x_ += K * z_diff;
     P_ -= K * S * K.transpose();
+
+    // Determine Normalized Innovation Squared (NIS) score.
+    const auto nis = z_diff.transpose() * S.inverse() * z_diff;
+    return nis;
 }
 

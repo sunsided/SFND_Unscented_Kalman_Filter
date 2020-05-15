@@ -1,6 +1,7 @@
 #ifndef UKF_H
 #define UKF_H
 
+#include <vector>
 #include "Eigen/Dense"
 #include "measurement_package.h"
 
@@ -32,14 +33,16 @@ public:
     /**
      * Updates the state and the state covariance matrix using a laser measurement
      * @param meas_package The measurement at k+1
+     * @return Normalized Innovation Square score
      */
-    void UpdateLidar(const MeasurementPackage& meas_package);
+    double UpdateLidar(const MeasurementPackage& meas_package);
 
     /**
      * Updates the state and the state covariance matrix using a radar measurement
      * @param meas_package The measurement at k+1
+     * @return Normalized Innovation Square score
      */
-    void UpdateRadar(const MeasurementPackage& meas_package);
+    double UpdateRadar(const MeasurementPackage& meas_package);
 
 
     // initially set to false, set to true in first call of ProcessMeasurement
@@ -115,11 +118,16 @@ public:
     // Radar measurement dimension (r, phi, r_dot)
     std::size_t n_z_radar_;
 
+    // Storage for NIS scores.
+    // For filter debugging only.
+    std::vector<std::pair<std::size_t, double>> nisScoresLidar;
+    std::vector<std::pair<std::size_t, double>> nisScoresRadar;
+
 private:
 
     void PredictRadarMeasurement(Eigen::VectorXd &z_pred, Eigen::MatrixXd &S, Eigen::MatrixXd &Zsig);
 
-    void UpdateStateFromRadar(const MeasurementPackage& meas_package, const Eigen::VectorXd &z_pred,
+    double UpdateStateFromRadar(const MeasurementPackage& meas_package, const Eigen::VectorXd &z_pred,
                               const Eigen::MatrixXd &S, const Eigen::MatrixXd &Zsig);
 
     Eigen::MatrixXd GenerateAugmentedSigmaPoints();
