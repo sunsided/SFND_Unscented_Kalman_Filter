@@ -34,7 +34,7 @@ The red spheres above cars represent the (x,y) lidar detection and the purple li
  * PCL 1.10
 
 
-## Normalized Innovation Squared (χ-squared test)
+## Normalized Innovation Squared (χ² test)
 
 In order to determine how well the uncertainty of the system was captured,
 the Normalized Innovation Squared (NIS) scores for each measurement were
