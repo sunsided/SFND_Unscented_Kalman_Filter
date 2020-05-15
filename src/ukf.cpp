@@ -47,12 +47,12 @@ UKF::UKF() {
     // initial covariance matrix
     P_ = MatrixXd(5, 5);
 
-    // Process noise standard deviation longitudinal acceleration in m/s^2
-    const auto expected_a_max = 4; // m/s^2 (e.g. 6 m/s^2 for inner-city dynamic driving)
-    std_a_ = 0.5 * expected_a_max; // m/s^2 acceleration noise
+    // Process noise standard deviation longitudinal acceleration in m/s²
+    const auto expected_a_max = 4; // m/s² (e.g. 6 m/s² for inner-city dynamic driving)
+    std_a_ = 0.5 * expected_a_max; // m/s² acceleration noise
 
-    // Process noise standard deviation yaw acceleration in rad/s^2
-    std_yawdd_ = M_PI_4; // ±45°/s^2
+    // Process noise standard deviation yaw acceleration in rad/s²
+    std_yawdd_ = M_PI_2; // ±22.5°/s²
 
     /**
      * DO NOT MODIFY measurement noise values below.
@@ -118,7 +118,7 @@ UKF::UKF() {
           0.00, 0.50, 0.00, 0.00, 0.00,
           0.00, 0.00, 1.00, 0.00, 0.00,
           0.00, 0.00, 0.00, 0.05, 0.00,
-          0.00, 0.00, 0.00, 0.00, 0.02;
+          0.00, 0.00, 0.00, 0.00, 0.10;
 
     // Sigma point spreading parameter design rule
     lambda_ = 3 - static_cast<double>(n_aug_);

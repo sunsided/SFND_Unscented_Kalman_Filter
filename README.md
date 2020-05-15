@@ -75,3 +75,47 @@ and performing clustering. This is similar to what was done in Sensor Fusion Lid
 This information is only accessible by people who are already enrolled in Sensor Fusion. 
 If you are enrolled, see the project page in the classroom
 for instructions and the project rubric.
+
+## Normalized Innovation Squared (χ-squared test)
+
+In order to determine how well the uncertainty of the system was captured,
+the Normalized Innovation Squared (NIS) scores for each measurement were
+taken and evaluated.
+
+From the following table we find that a system of 2 degrees of freedom (DOF)
+like the LiDAR sensor, a 95% value of 5.991 (χ².050) is to be expected - i.e.
+95% of all NIS values for a system of 2 DOF are less than 5.991 - whereas
+a system of three DOF like the Radar has an according 95% value of 7.815:
+
+![](.readme/chisquare.png)
+
+Initially,
+
+- an acceleration standard deviation of 2m/s², and
+- a yaw acceleration standard devation of 45°/s²
+
+were assumed. At this configuration, the following NIS scores were observed for the LiDAR.
+
+![](.readme/nis-lidar-y45.png)
+
+Here, we can observe that approximately 93% of all values
+are below threshold, i.e. we overestimated the system's uncertainty.
+
+For the Radar we find that about 90% of all values are below
+threshold, reinforcing the point.
+
+![](.readme/nis-radar-y45.png)
+
+After this, the uncertainty was tuned to the following values:
+
+- **acceleration standard deviation:** 2m/s²
+- **yaw acceleration standard devation:** 22.5°/s²
+
+Interestingly, this affected the LiDAR measurements, which
+now closely resemble the wanted distribution:
+
+![](.readme/nis-lidar-y22.5.png)
+
+The Radar measurments, however, did not change significantly:
+
+![](.readme/nis-radar-y22.5.png)
