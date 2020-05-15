@@ -20,10 +20,10 @@ public:
      * ProcessMeasurement
      * @param meas_package The latest measurement data of either radar or laser
      */
-    void ProcessMeasurement(MeasurementPackage meas_package);
+    void ProcessMeasurement(const MeasurementPackage& meas_package);
 
     /**
-     * Prediction Predicts sigma points, the state, and the state covariance
+     * Predicts sigma points, the state, and the state covariance
      * matrix
      * @param delta_t Time between k and k+1 in s
      */
@@ -33,13 +33,13 @@ public:
      * Updates the state and the state covariance matrix using a laser measurement
      * @param meas_package The measurement at k+1
      */
-    void UpdateLidar(MeasurementPackage meas_package);
+    void UpdateLidar(const MeasurementPackage& meas_package);
 
     /**
      * Updates the state and the state covariance matrix using a radar measurement
      * @param meas_package The measurement at k+1
      */
-    void UpdateRadar(MeasurementPackage meas_package);
+    void UpdateRadar(const MeasurementPackage& meas_package);
 
 
     // initially set to false, set to true in first call of ProcessMeasurement
@@ -57,8 +57,21 @@ public:
     // state covariance matrix
     Eigen::MatrixXd P_;
 
-    // predicted sigma points matrix
+    // State mean / covariance identity matrix.
+    Eigen::MatrixXd I_;
+
+    // predicted sigma points matrix 𝓧
     Eigen::MatrixXd Xsig_pred_;
+
+    // LiDAR measurement projection matrix
+    Eigen::MatrixXd H_lidar_;
+    Eigen::MatrixXd Ht_lidar_;
+
+    // LiDAR measurement noise covariance matrix
+    Eigen::MatrixXd R_laser_;
+
+    // Radar measurement noise covariance matrix
+    Eigen::MatrixXd R_radar_;
 
     // time when the state is true, in us
     long long time_us_;
@@ -88,13 +101,32 @@ public:
     Eigen::VectorXd weights_;
 
     // State dimension
-    int n_x_;
+    std::size_t n_x_;
 
     // Augmented state dimension
-    int n_aug_;
+    std::size_t n_aug_;
+
+    // The number of sigma points
+    std::size_t n_sigma_points_;
 
     // Sigma point spreading parameter
     double lambda_;
+
+    // Radar measurement dimension (r, phi, r_dot)
+    std::size_t n_z_radar_;
+
+private:
+
+    void PredictRadarMeasurement(Eigen::VectorXd &z_pred, Eigen::MatrixXd &S, Eigen::MatrixXd &Zsig);
+
+    void UpdateStateFromRadar(const MeasurementPackage& meas_package, const Eigen::VectorXd &z_pred,
+                              const Eigen::MatrixXd &S, const Eigen::MatrixXd &Zsig);
+
+    Eigen::MatrixXd GenerateAugmentedSigmaPoints();
+
+    void PredictSigmaPoints(const Eigen::MatrixXd& Xsig_aug, const double& delta_t);
+
+    void PredictStateMeanAndCovarianceFromSigmaPoints();
 };
 
 #endif  // UKF_H
