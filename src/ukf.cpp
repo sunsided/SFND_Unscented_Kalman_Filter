@@ -4,8 +4,7 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-// TODO: Re-enable
-// #define MEANS_BY_ROWWISE_SUM
+#define MEANS_BY_ROWWISE_SUM
 
 namespace {
 
