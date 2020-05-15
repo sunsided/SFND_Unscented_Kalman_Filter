@@ -50,7 +50,7 @@ a system of three DOF like the Radar has an according 95% value of 7.815:
 Initially,
 
 - an **acceleration standard deviation** of 2 m/s², and
-- a **&yaw acceleration standard devation** of 45°/s²
+- a **yaw acceleration standard devation** of 45°/s²
 
 were assumed. At this configuration, the following NIS scores were observed for the LiDAR.
 
