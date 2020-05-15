@@ -1,4 +1,4 @@
-# Unscented Kalman Filtering
+# Multi-Object Tracking using Unscented Kalman Filters
 
 This project implements an Unscented Kalman Filter to estimate the state of multiple cars on a highway using noisy LiDAR and Radar measurements.
 
