@@ -52,7 +52,7 @@ UKF::UKF() {
     std_a_ = 0.5 * expected_a_max; // m/s^2 acceleration noise
 
     // Process noise standard deviation yaw acceleration in rad/s^2
-    std_yawdd_ = M_PI_4; // TODO: Was 30;
+    std_yawdd_ = M_PI_4; // ±45°/s^2
 
     /**
      * DO NOT MODIFY measurement noise values below.
@@ -101,6 +101,7 @@ UKF::UKF() {
     P_ = MatrixXd(n_x_, n_x_);
 
     // We will initialize the covariance matrix according to some basic considerations:
+    //
     // - The initially measured X and Y positions will be good regardless of the sensor.
     // - We will have a better chance at measuring X distance than at measuring distances
     //   to the side due to the nature of the Radar.
@@ -110,6 +111,9 @@ UKF::UKF() {
     // - LiDAR will not be able to provide direct orientation or turn rate estimates,
     //   and we don't have a good prior. We could assume that the targets move in the
     //   same direction as we do, but this throws off the initial y velocity estimate.
+    //
+    // We could, of course, also initialize the covariance matrix as soon as the first
+    // measurement arrives, since we then have some higher trust in individual values.
     P_ << 1.00, 0.00, 0.00, 0.00, 0.00,
           0.00, 0.50, 0.00, 0.00, 0.00,
           0.00, 0.00, 1.00, 0.00, 0.00,
@@ -291,14 +295,14 @@ void UKF::PredictStateMeanAndCovarianceFromSigmaPoints() {
 
 void UKF::ProcessMeasurement(const MeasurementPackage& meas_package) {
     if (!is_initialized_) {
-        if (use_laser_ && (meas_package.sensor_type_ == MeasurementPackage::LASER)) {
+        if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
             // set the state with the initial location and zero velocity
             x_ << meas_package.raw_measurements_[0],
                   meas_package.raw_measurements_[1],
                   0.0,
                   0.0,
                   0.0;
-        } else if (use_radar_ && (meas_package.sensor_type_ == MeasurementPackage::RADAR)) {
+        } else if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
             const auto r     = meas_package.raw_measurements_[0];
             const auto phi   = meas_package.raw_measurements_[1];
             const auto r_dot = meas_package.raw_measurements_[2];
@@ -307,6 +311,10 @@ void UKF::ProcessMeasurement(const MeasurementPackage& meas_package) {
                   r_dot,
                   phi,
                   0.0;
+
+            // We might ...
+            // P_(3, 3) = 1;
+            // P_(4, 4) = 1;
         }
 
         time_us_ = meas_package.timestamp_;
