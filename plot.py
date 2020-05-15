@@ -4,11 +4,11 @@ import pandas as pd
 
 
 tuples = [
-    ('nis-lidar', 2, 5.991),
-    ('nis-radar', 3, 7.815),
+    ('LiDAR', 'nis-lidar', 2, 5.991),
+    ('Radar', 'nis-radar', 3, 7.815),
 ]
 
-for filename, dof, threshold_005 in tuples:
+for name, filename, dof, threshold_005 in tuples:
 
     df = pd.read_csv(f'{filename}.csv', skipinitialspace=True)
     grouped = df.groupby('car')
@@ -18,7 +18,7 @@ for filename, dof, threshold_005 in tuples:
     colors = prop_cycle.by_key()['color']
 
     fig, ax = plt.subplots(len(grouped), 1, figsize=(8, 10))
-    fig.suptitle(f'Normalized Innovation Squared ($\chi^2$ at {dof} DOF)', fontsize=12)
+    fig.suptitle(f'{name} Normalized Innovation Squared ($\chi^2$ at {dof} DOF)', fontsize=12)
 
     for i, (key, group) in enumerate(grouped):
         t = group['time [s]'].values

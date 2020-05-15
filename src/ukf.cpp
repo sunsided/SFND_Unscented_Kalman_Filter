@@ -48,8 +48,8 @@ UKF::UKF() {
     P_ = MatrixXd(5, 5);
 
     // Process noise standard deviation longitudinal acceleration in m/s²
-    const auto expected_a_max = 4; // m/s² (e.g. 6 m/s² for inner-city dynamic driving)
-    std_a_ = 0.5 * expected_a_max; // m/s² acceleration noise
+    const auto expected_a_max = 12; // m/s² (e.g. 6 m/s² for inner-city dynamic driving)
+    std_a_ = 0.5 * expected_a_max;  // m/s² acceleration noise
 
     // Process noise standard deviation yaw acceleration in rad/s²
     std_yawdd_ = M_PI_2; // ±22.5°/s²

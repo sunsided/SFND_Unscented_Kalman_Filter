@@ -91,8 +91,8 @@ a system of three DOF like the Radar has an according 95% value of 7.815:
 
 Initially,
 
-- an acceleration standard deviation of 2m/s², and
-- a yaw acceleration standard devation of 45°/s²
+- an **acceleration standard deviation** of 2 m/s², and
+- a **&yaw acceleration standard devation** of 45°/s²
 
 were assumed. At this configuration, the following NIS scores were observed for the LiDAR.
 
@@ -108,7 +108,7 @@ threshold, reinforcing the point.
 
 After this, the uncertainty was tuned to the following values:
 
-- **acceleration standard deviation:** 2m/s²
+- **acceleration standard deviation:** 2 m/s²
 - **yaw acceleration standard devation:** 22.5°/s²
 
 Interestingly, this affected the LiDAR measurements, which
@@ -119,3 +119,21 @@ now closely resemble the wanted distribution:
 The Radar measurments, however, did not change significantly:
 
 ![](.readme/nis-radar-y22.5.png)
+
+Increasing the acceleration uncertainty such that
+
+- **acceleration standard deviation:** 12 m/s²
+- **yaw acceleration standard devation:** 22.5°/s²
+
+gave good feedback for both the LiDAR measurements:
+
+![](.readme/nis-lidar.png)
+
+... as well as the Radar measurements:
+
+![](.readme/nis-radar.png)
+
+
+By observation, the RMSE values obtained in the simulator
+appeared to be lower with a slightly reduced acceleration
+autocovariance of 8 m/s².
