@@ -64,7 +64,7 @@ threshold, reinforcing the point.
 
 ![](.readme/nis-radar-y45.png)
 
-After this, the uncertainty was tuned to the following values:
+After this, the uncertainty was tuned to have less uncertainty in angular acceleration:
 
 - **acceleration standard deviation:** 2 m/s²
 - **yaw acceleration standard devation:** 22.5°/s²
